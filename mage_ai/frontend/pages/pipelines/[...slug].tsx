@@ -62,6 +62,7 @@ import { initializeContentAndMessages, updateCollapsedBlocks } from '@components
 import { onSuccess } from '@api/utils/response';
 import { randomNameGenerator } from '@utils/string';
 import { queryFromUrl } from '@utils/url';
+import { redirectToFirstPipeline } from '@components/PipelineDetail/utils';
 import { useWindowSize } from '@utils/sizes';
 
 type PipelineDetailPageProps = {
@@ -495,6 +496,34 @@ function PipelineDetailPage({
     widgets,
   ]);
 
+  const [deletePipeline] = useMutation(
+    (uuid: string) => api.pipelines.useDelete(uuid)(),
+    {
+      onSuccess: (response: any) => onSuccess(
+        response, {
+          callback: ({
+            pipeline: {
+              uuid,
+            },
+          }) => {
+            if (uuid === pipelineUUID) {
+              redirectToFirstPipeline(router);
+            }
+            fetchFileTree();
+          },
+          onErrorCallback: ({
+            error: {
+              errors,
+              message,
+            },
+          }) => {
+            console.log(errors, message);
+          },
+        },
+      ),
+    },
+  );
+
   const [deleteBlock] = useMutation(
     ({ uuid }: BlockType) => api.blocks.pipelines.useDelete(pipelineUUID, uuid)(),
     {
@@ -728,6 +757,11 @@ function PipelineDetailPage({
             widget,
           },
         } = response;
+<<<<<<< HEAD
+=======
+        console.log(response);
+        // setBlocks((previousBlocks) => pushAtIndex(block, idx, previousBlocks));
+>>>>>>> 20e72cba ([sp] add delete and duplicate pipelines API calls)
         onCreateCallback?.(widget);
         fetchFileTree();
         fetchPipeline();
@@ -951,7 +985,9 @@ function PipelineDetailPage({
   const fileTree = useMemo(() => (
     <ContextMenu
       areaRef={fileTreeRef}
+      createPipeline={createPipeline}
       deleteBlockFile={deleteBlockFile}
+      deletePipeline={deletePipeline}
       enableContextItem
       type={ContextMenuEnum.FILE_BROWSER}
     >
