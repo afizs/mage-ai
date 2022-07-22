@@ -1,5 +1,5 @@
 import BlockType, { OutputType } from '@interfaces/BlockType';
-import api from '@api';
+import PipelineType from '@interfaces/PipelineType';
 import { NextRouter } from 'next/router';
 import { remove, set } from '@storage/localStorage';
 
@@ -53,8 +53,7 @@ export function updateCollapsedBlocks(blocks: BlockType[], pipelineUUID: string,
   });
 }
 
-export const redirectToFirstPipeline = (router: NextRouter) => {
-	const { data: { pipelines } } = api.pipelines.list();
+export const redirectToFirstPipeline = (pipelines: PipelineType[], router: NextRouter) => {
 	const pathname = `/pipelines/${pipelines?.[0]}`;
 	const query = router.query;
 
