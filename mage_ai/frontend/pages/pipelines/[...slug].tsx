@@ -10,9 +10,7 @@ import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 
 import BlockType, {
-  BlockRequestPayloadType,
   BlockTypeEnum,
-  OutputType,
   SampleDataType,
 } from '@interfaces/BlockType';
 import ContextMenu, { ContextMenuEnum } from '@components/ContextMenu';
@@ -58,7 +56,11 @@ import { UNIT } from '@oracle/styles/units/spacing';
 import { WEBSOCKT_URL } from '@utils/constants';
 import { equals, pushAtIndex, removeAtIndex } from '@utils/array';
 import { goToWithQuery } from '@utils/routing';
-import { initializeContentAndMessages, updateCollapsedBlocks } from '@components/PipelineDetail/utils';
+import {
+  initializeContentAndMessages,
+  removeCollapsedBlockStates,
+  updateCollapsedBlockStates,
+} from '@components/PipelineDetail/utils';
 import { onSuccess } from '@api/utils/response';
 import { randomNameGenerator } from '@utils/string';
 import { queryFromUrl } from '@utils/url';
@@ -427,7 +429,7 @@ function PipelineDetailPage({
             },
           }) => {
             fetchFileTree();
-            updateCollapsedBlocks(blocks, pipelineUUID, uuid);
+            updateCollapsedBlockStates(blocks, pipelineUUID, uuid);
             router.push(`/pipelines/${uuid}`);
           },
           onErrorCallback: ({
@@ -511,6 +513,7 @@ function PipelineDetailPage({
             if (uuid === pipelineUUID) {
               redirectToFirstPipeline(pipelines, router);
             }
+            removeCollapsedBlockStates(blocks, pipelineUUID);
             fetchFileTree();
           },
           onErrorCallback: ({

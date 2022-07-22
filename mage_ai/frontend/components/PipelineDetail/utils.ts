@@ -39,7 +39,7 @@ export function initializeContentAndMessages(blocks: BlockType[]) {
   };
 }
 
-export function updateCollapsedBlocks(blocks: BlockType[], pipelineUUID: string, newPipelineUUID: string) {
+export function updateCollapsedBlockStates(blocks: BlockType[], pipelineUUID: string, newPipelineUUID: string) {
   blocks.forEach((b) => {
     set(
       `${newPipelineUUID}/${b.uuid}/codeCollapsed`,
@@ -50,6 +50,13 @@ export function updateCollapsedBlocks(blocks: BlockType[], pipelineUUID: string,
       `${newPipelineUUID}/${b.uuid}/outputCollapsed`,
       remove(`${pipelineUUID}/${b.uuid}/outputCollapsed`),
     );
+  });
+}
+
+export function removeCollapsedBlockStates(blocks: BlockType[], pipelineUUID: string) {
+  blocks.forEach((b) => {
+    remove(`${pipelineUUID}/${b.uuid}/codeCollapsed`);
+    remove(`${pipelineUUID}/${b.uuid}/outputCollapsed`);
   });
 }
 
