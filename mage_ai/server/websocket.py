@@ -51,8 +51,8 @@ class WebSocketServer(tornado.websocket.WebSocketHandler):
         execute_pipeline = message.get('execute_pipeline')
 
         run_downstream = message.get('run_downstream')
-        print('run_downstream', run_downstream)
         run_upstream = message.get('run_upstream')
+        run_tests = message.get('run_tests')
 
         if execute_pipeline:
             pipeline_uuid = message.get('pipeline_uuid')
@@ -118,6 +118,32 @@ class WebSocketServer(tornado.websocket.WebSocketHandler):
                         type=block.type,
                         uuid=block.uuid,
                     )))
+        elif run_tests:
+            block_type = message.get('type')
+            block_uuid = message.get('uuid')
+            pipeline_uuid = message.get('pipeline_uuid')
+            widget = BlockType.CHART == block_type
+
+            pipeline = Pipeline(pipeline_uuid, get_repo_path())
+            block = pipeline.get_block(block_uuid, widget=widget)
+            code = custom_code
+            if block is not None and block.type in CUSTOM_EXECUTION_BLOCK_TYPES:
+                value = dict(
+                    block_uuid=block_uuid,
+                    pipeline_uuid=pipeline_uuid,
+                )
+                msg_id = str(uuid.uuid4())
+                WebSocketServer.running_executions_mapping[msg_id] = value
+                test_output = block.run_tests(redirect_outputs=True)
+                self.send_message(
+                    dict(
+                        data=test_output,
+                        execution_state='idle',
+                        msg_id=msg_id,
+                        msg_type='stream_pipeline',
+                        type=DataType.TEXT_PLAIN,
+                    )
+                )
         elif output:
             self.send_message(output)
 
