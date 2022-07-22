@@ -54,13 +54,13 @@ export function updateCollapsedBlocks(blocks: BlockType[], pipelineUUID: string,
 }
 
 export const redirectToFirstPipeline = (pipelines: PipelineType[], router: NextRouter) => {
-	const pathname = `/pipelines/${pipelines?.[0]}`;
-	const query = router.query;
+  const pathname = `/pipelines/${pipelines?.[0]}`;
+  const query = router.query;
 
-	if (pipelines?.length >= 1) {
-		router.push({
-			pathname,
-			query,
-		});
-	}
+  if (pipelines?.length >= 1) {
+    router.push({
+      pathname,
+      query,
+    });
+  }
 };
