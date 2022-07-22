@@ -8,7 +8,7 @@ from mage_ai.data_preparation.models.constants import (
 )
 from mage_ai.data_preparation.models.variable import Variable
 from mage_ai.data_preparation.models.widget import Widget
-from mage_ai.data_preparation.repo_manager import get_repo_config, get_repo_path
+from mage_ai.data_preparation.repo_manager import RepoConfig, get_repo_config, get_repo_path
 from mage_ai.data_preparation.templates.template import copy_template_directory
 import os
 import shutil
@@ -31,6 +31,8 @@ class Pipeline:
             self.load_config(config)
         if repo_config is None:
             self.repo_config = get_repo_config()
+        elif repo_config is dict:
+            self.repo_config = RepoConfig.from_dict(repo_config)
         else:
             self.repo_config = repo_config
 
