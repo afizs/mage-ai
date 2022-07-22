@@ -284,6 +284,7 @@ class Block:
         should_save_outputs=True,
         update_status=True,
     ):
+<<<<<<< HEAD
         try:
             if not run_all_blocks:
                 not_executed_upstream_blocks = list(
@@ -310,7 +311,7 @@ class Block:
                 ))
             else:
                 if should_save_outputs:
-                    self.__verify_outputs(block_output)
+                    # self.__verify_outputs(block_output)
                     variable_mapping = dict(zip(self.output_variables.keys(), block_output))
 
             if should_save_outputs:
